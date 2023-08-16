@@ -4,23 +4,27 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        // consider making this an array where each index is an object that holds two keys.
+        // One key value pair for the question and another for the answer
+
         File csvRiddles = new File("TSVriddles.tsv");
-        String buildMapString = "const map = new Map([" + "\n";
+        String buildMapString = "[" + "\n";
         int initialLength = buildMapString.length();
         try (Scanner scanner = new Scanner(csvRiddles)) {
 
             while (scanner.hasNextLine()) {
                 String[] thisLine = scanner.nextLine().split("\\t");
                 if (buildMapString.length() == initialLength) {
-                    buildMapString += "[\"" + thisLine[0] + "\", \"" + thisLine[1] + "\"],";
+                    buildMapString += "{" + "Question: \"" + thisLine[0] + "\", \n Answer: \"" + thisLine[1] + "\"},";
                 } else {
-                    buildMapString += "\n" + "[\"" + thisLine[0] + "\", \"" + thisLine[1] + "\"],";
+                    buildMapString += "\n" + "{Question: \"" + thisLine[0] + "\", \n Answer: \"" + thisLine[1] + "\"},";
                 }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        buildMapString = buildMapString.substring(0,buildMapString.length()-1) + "\n" + "]);";
+        buildMapString = buildMapString.substring(0,buildMapString.length()-1) + "\n" + "]";
         System.out.println(buildMapString);
     }
 }
