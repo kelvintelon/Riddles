@@ -1,15 +1,19 @@
 <template>
   <div class="hello">
-    <h1>{{ showRiddleOfTheDay }}</h1>
+    <h1>{{ this.riddles[showRiddleOfTheDay].Question }}</h1>
+    <input
+    placeholder="Answer"
+    v-model="answer"
+    @keydown.enter="submitAnswer"
+    :readonly="setReadOnly">
+    <div v-for="(item, index) in listOfAttempts" :key="index"> {{ item }}</div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'RiddlesHomePage',
-  props: {
-    msg: String
-  },
+  listOfTries: [],
   data() {
     return {
       riddles: [
@@ -253,8 +257,26 @@ export default {
           Question: "What begins with an “e” and only contains one letter?",
           Answer: "Envelope"
         }
-      ]
+      ],
+      listOfAttempts: [],
+      answer: "",
+      readOnly: false,
     }
+  },
+  methods: {
+    submitAnswer() {
+      if (this.riddles[this.showRiddleOfTheDay].Answer.toUpperCase() == this.answer.toUpperCase()) {
+        alert("Correct!")
+        this.setReadOnly = true;
+      } else if (this.listOfAttempts.length != 5) {
+        this.listOfAttempts.push(this.answer);
+        this.answer = ""
+      } else {
+        alert("You have run out of attempts")
+        this.setReadOnly = true;
+      }
+      
+    },  
   },
   computed: {
     showRiddleOfTheDay() {
@@ -264,7 +286,7 @@ export default {
       let comparableDate = new Date(todayStringMMDDYYYY)
       let differenceInTime = comparableDate.getTime() - startTime.getTime();
       let differenceInDays = differenceInTime / (1000 * 3600 * 24);
-      return this.riddles[differenceInDays].Question
+      return differenceInDays
     },
   }
 }
