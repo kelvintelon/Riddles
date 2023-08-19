@@ -268,6 +268,7 @@ export default {
       if (this.riddles[this.showRiddleOfTheDay].Answer.toUpperCase() == this.answer.toUpperCase()) {
         alert("Correct!")
         this.setReadOnly = true;
+        this.setCookie()
       } else if (this.listOfAttempts.length != 5) {
         this.listOfAttempts.push(this.answer);
         this.answer = ""
@@ -275,8 +276,16 @@ export default {
         alert("You have run out of attempts")
         this.setReadOnly = true;
       }
-      
     },  
+    setCookie() {
+      let todayDate  = new Date();
+      let todayStringMMDDYYYY = ""+(todayDate.getMonth()+1)+"/"+todayDate.getDate()+"/"+todayDate.getFullYear();
+      let arrayOfStringDates = [];
+      // optimize this so that it retrieves a current running 
+      // list of dates that the user successfully answered
+      arrayOfStringDates.push(todayStringMMDDYYYY);
+      document.cookie = "correct date" + '=' + JSON.stringify(arrayOfStringDates) + ";"
+    },
   },
   computed: {
     showRiddleOfTheDay() {
