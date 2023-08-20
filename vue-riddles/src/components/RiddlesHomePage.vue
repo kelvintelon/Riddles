@@ -1,11 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ this.riddles[showRiddleOfTheDay].Question }}</h1>
-    <input
-    placeholder="Answer"
-    v-model="answer"
-    @keydown.enter="submitAnswer"
-    :readonly="setReadOnly">
+    <input placeholder="Answer" v-model="answer" @keydown.enter="submitAnswer" :readonly="setReadOnly">
     <div v-for="(item, index) in listOfAttempts" :key="index"> {{ item }}</div>
   </div>
 </template>
@@ -276,22 +272,43 @@ export default {
         alert("You have run out of attempts")
         this.setReadOnly = true;
       }
-    },  
+    },
     setCookie() {
-      let todayDate  = new Date();
-      let todayStringMMDDYYYY = ""+(todayDate.getMonth()+1)+"/"+todayDate.getDate()+"/"+todayDate.getFullYear();
+      let todayDate = new Date();
+      let todayStringMMDDYYYY = "" + (todayDate.getMonth() + 1) + "/" + todayDate.getDate() + "/" + todayDate.getFullYear();
       let arrayOfStringDates = [];
-      // optimize this so that it retrieves a current running 
-      // list of dates that the user successfully answered
+      let result = new Array();
+      // Retrieve a current list 
+      // of dates that the user successfully answered
+      // then pushes it back up with a new date at the end
+
+      result = [this.getCookie("correct date")];
+      alert(typeof result)
+      arrayOfStringDates = result;
       arrayOfStringDates.push(todayStringMMDDYYYY);
       document.cookie = "correct date" + '=' + JSON.stringify(arrayOfStringDates) + ";"
     },
+    getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length+2, c.length-2);
+        }
+      }
+      return "";
+    }
   },
   computed: {
     showRiddleOfTheDay() {
       let startTime = new Date("08/17/2023");
-      let todayDate  = new Date();
-      let todayStringMMDDYYYY = ""+(todayDate.getMonth()+1)+"/"+todayDate.getDate()+"/"+todayDate.getFullYear();
+      let todayDate = new Date();
+      let todayStringMMDDYYYY = "" + (todayDate.getMonth() + 1) + "/" + todayDate.getDate() + "/" + todayDate.getFullYear();
       let comparableDate = new Date(todayStringMMDDYYYY)
       let differenceInTime = comparableDate.getTime() - startTime.getTime();
       let differenceInDays = differenceInTime / (1000 * 3600 * 24);
@@ -302,7 +319,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>h3 {
+<style scoped>
+h3 {
   margin: 40px 0 0;
 }
 
@@ -318,4 +336,5 @@ li {
 
 a {
   color: #42b983;
-}</style>
+}
+</style>
